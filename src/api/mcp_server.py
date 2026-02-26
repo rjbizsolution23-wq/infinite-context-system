@@ -7,8 +7,8 @@ import os
 from typing import Optional, Dict, Any
 from mcp.server.fastmcp import FastMCP
 
-from orchestrator import InfiniteContextOrchestrator
-from config import SystemConfig
+from src.agents.orchestrator import InfiniteContextOrchestrator
+from src.lib.config import SystemConfig
 
 # Initialize MCP Server
 mcp = FastMCP("InfiniteContextSystem")

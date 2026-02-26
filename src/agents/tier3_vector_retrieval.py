@@ -13,7 +13,7 @@ from collections import defaultdict
 from qdrant_client import QdrantClient, models
 from openai import AsyncOpenAI
 
-from config import SystemConfig, TokenCounter, ContextTier
+from src.lib.config import SystemConfig, TokenCounter, ContextTier
 from flashrank import Ranker, RerankRequest
 from sentence_transformers import SentenceTransformer
 from PIL import Image

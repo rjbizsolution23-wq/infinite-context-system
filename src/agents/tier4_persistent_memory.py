@@ -8,7 +8,7 @@ from collections import defaultdict
 from neo4j import GraphDatabase, AsyncGraphDatabase
 from openai import AsyncOpenAI
 
-from config import SystemConfig, TokenCounter, ContextTier
+from src.lib.config import SystemConfig, TokenCounter, ContextTier
 
 
 @dataclass

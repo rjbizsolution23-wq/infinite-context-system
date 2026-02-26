@@ -6,8 +6,8 @@ import logging
 import os
 from datetime import datetime
 
-from config import SystemConfig
-from orchestrator import InfiniteContextOrchestrator
+from src.lib.config import SystemConfig
+from src.agents.orchestrator import InfiniteContextOrchestrator
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)

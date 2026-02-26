@@ -9,7 +9,7 @@ from datetime import datetime
 import json
 import hashlib
 
-from config import SystemConfig, TokenCounter, ContextTier, COMPRESSION_PROMPT
+from src.lib.config import SystemConfig, TokenCounter, ContextTier, COMPRESSION_PROMPT
 
 
 @dataclass

@@ -8,13 +8,13 @@ from dataclasses import dataclass
 from datetime import datetime
 import json
 
-from config import SystemConfig, TokenCounter, SYSTEM_PROMPT_TEMPLATE
-from tier1_active_context import ActiveContextWindow, Message
-from tier2_compressed_memory import CompressedMemoryManager
-from tier3_vector_retrieval import VectorRetrievalSystem, Document, RetrievalResult
-from tier4_persistent_memory import PersistentMemorySystem
-from semantic_cache import SemanticCache
-from llm_interface import UniversalLLMInterface
+from src.lib.config import SystemConfig, TokenCounter, SYSTEM_PROMPT_TEMPLATE
+from src.agents.tier1_active_context import ActiveContextWindow, Message
+from src.agents.tier2_compressed_memory import CompressedMemoryManager
+from src.agents.tier3_vector_retrieval import VectorRetrievalSystem, Document, RetrievalResult
+from src.agents.tier4_persistent_memory import PersistentMemorySystem
+from src.lib.semantic_cache import SemanticCache
+from src.lib.llm_interface import UniversalLLMInterface
 
 
 @dataclass

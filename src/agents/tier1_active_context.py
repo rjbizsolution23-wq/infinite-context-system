@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from collections import deque
 
-from config import SystemConfig, TokenCounter, ContextTier
+from src.lib.config import SystemConfig, TokenCounter, ContextTier
 
 
 @dataclass
