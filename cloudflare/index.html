@@ -3,93 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinite Context System (ICS) — Enterprise AI Memory</title>
+    <title>ICS — Infinite Context System | Enterprise AGI Infrastructure</title>
+    <meta name="description" content="The world's first 4-tier autonomous perception engine. Infinite memory, zero latency, enterprise-grade AI infrastructure.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #6366f1;
-            --bg: #0f172a;
-            --text: #f8fafc;
-            --card-bg: #1e293b;
+            --bg-deep: #020617;
+            --accent-primary: #6366f1;
+            --accent-secondary: #06b6d4;
+            --accent-tertiary: #a855f7;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass-bg: rgba(30, 41, 59, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
             line-height: 1.6;
         }
-        header {
-            padding: 4rem 2rem;
+
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+        }
+
+        /* --- Background Effects --- */
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.15), transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
             padding: 2rem;
+            background: linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.7)), url('assets/hero-bg.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
         }
-        h1 { font-size: 3rem; margin-bottom: 1rem; }
-        .badge {
-            background: var(--primary);
-            padding: 0.25rem 0.75rem;
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(transparent, var(--bg-deep));
+        }
+
+        .badge-elite {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            padding: 0.5rem 1.25rem;
             border-radius: 9999px;
-            font-size: 0.875rem;
             font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease-out;
         }
-        .grid {
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            max-width: 650px;
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            animation: fadeInUp 1.4s ease-out;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 10px 20px -10px var(--accent-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -10px var(--accent-primary);
+            background: #4f46e5;
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--glass-border);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- Architecture Section --- */
+        .section {
+            padding: 8rem 2rem;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tagline {
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .section-header {
+            max-width: 800px;
+            margin-bottom: 5rem;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .architecture-viz {
+            position: relative;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5);
+            border: 1px solid var(--glass-border);
+        }
+
+        .architecture-viz img {
+            width: 100%;
+            display: block;
+        }
+
+        .tier-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .tier-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 1.25rem;
+            transition: all 0.3s;
+        }
+
+        .tier-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-secondary);
+            transform: translateX(10px);
+        }
+
+        .tier-card h3 {
+            color: var(--accent-secondary);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tier-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        /* --- Use Cases --- */
+        .use-case-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 3rem;
         }
-        .card {
-            background: var(--card-bg);
+
+        .use-case-card {
+            background: var(--glass-bg);
+            padding: 2.5rem;
+            border-radius: 2rem;
+            border: 1px solid var(--glass-border);
+            text-align: left;
+        }
+
+        .use-case-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .use-case-card h3 { margin-bottom: 1rem; }
+        .use-case-card p { color: var(--text-dim); }
+
+        /* --- Research Papers --- */
+        .research-shelf {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            padding: 2rem 0;
+            scrollbar-width: none;
+        }
+
+        .paper-card {
+            min-width: 300px;
+            background: #1e293b;
             padding: 2rem;
-            border-radius: 1rem;
-            border: 1px solid #334155;
-            transition: transform 0.2s;
-        }
-        .card:hover { transform: translateY(-5px); }
-        .cta {
-            display: inline-block;
-            margin-top: 2rem;
-            padding: 0.75rem 1.5rem;
-            background: var(--primary);
-            color: white;
+            border-radius: 1.5rem;
+            border-bottom: 4px solid var(--accent-tertiary);
+            transition: transform 0.3s;
             text-decoration: none;
-            border-radius: 0.5rem;
-            font-weight: bold;
+            color: inherit;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-10px) rotate(2deg);
+        }
+
+        /* --- VC CTA --- */
+        .vc-banner {
+            background: linear-gradient(135deg, #4338ca, #6d28d9);
+            border-radius: 3rem;
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vc-banner h2 { font-size: 3.5rem; margin-bottom: 1rem; }
+        .vc-banner p { margin-bottom: 2.5rem; opacity: 0.9; font-size: 1.25rem; }
+
+        /* --- Animations --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 968px) {
+            .architecture-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 3.5rem; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <span class="badge">v3.0 — Elite Edition</span>
-        <h1>Infinite Context System</h1>
-        <p>Revolutionizing LLM memory with a 4-tier perception architecture.</p>
-        <a href="https://github.com/rjbizsolution23-wq/infinite-context-system" class="cta">View Source on GitHub</a>
-    </header>
-    <div class="container">
-        <h2>Enterprise-Grade AI Infrastructure</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>🧠 Self-RAG</h3>
-                <p>Autonomous reflection loops that validate and self-correct retrieval results for maximum precision.</p>
+    <div class="ambient-glow"></div>
+
+    <section class="hero">
+        <div class="badge-elite">RJ Business Solutions — Advanced Neuro-Architecture</div>
+        <h1>Infinite Context.<br>Persistent Perception.</h1>
+        <p>The world's first 4-tier autonomous memory engine. Bridging the gap between reactive processing and long-term AGI reasoning.</p>
+        <div class="cta-group">
+            <a href="https://github.com/rjbizsolution23-wq/infinite-context-system" class="btn btn-primary">Download v3.0 Elite</a>
+            <a href="#architecture" class="btn btn-secondary">Explore Architecture</a>
+        </div>
+    </section>
+
+    <section id="architecture" class="section">
+        <div class="container">
+            <span class="tagline">The 4-Tier Stack</span>
+            <div class="section-header">
+                <h2>Memory Redefined.</h2>
+                <p>Most AI systems forget after a single window. ICS maintains a persistent state through 4 layers of specialized perception.</p>
             </div>
-            <div class="card">
-                <h3>👁️ Multi-Modal</h3>
-                <p>CLIP-based visual perception for indexing images, charts, and diagrams directly into AI memory.</p>
-            </div>
-            <div class="card">
-                <h3>🐝 Swarm Memory</h3>
-                <p>Distributed Redis backbone for synchronizing context across massive agent networks.</p>
+            
+            <div class="architecture-grid">
+                <div class="architecture-viz">
+                    <img src="assets/architecture.png" alt="ICS 4-Tier Architecture Diagram">
+                </div>
+                <div class="tier-list">
+                    <div class="tier-card">
+                        <h3><span>01</span> Active Context</h3>
+                        <p>Immediate 128k token window with dynamic pruning and significance weighting.</p>
+                    </div>
+                    <div class="tier-card">
+                        <h3><span>02</span> Compressed Hierarchies</h3>
+                        <p>Recursive summarization that preserves core logic while reducing token overhead by 85%.</p>
+                    </div>
+                    <div class="tier-card">
+                        <h3><span>03</span> Vector Retrieval</h3>
+                        <p>Hybrid semantic/keyword RAG layer with self-correcting reflection loops (Self-RAG).</p>
+                    </div>
+                    <div class="tier-card">
+                        <h3><span>04</span> Persistent Graph</h3>
+                        <p>Neo4j-augmented entity memory for long-term multi-session continuity and preference tracking.</p>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <footer style="margin-top: 5rem; text-align: center; opacity: 0.6;">
-            © 2026 RJ Business Solutions. All rights reserved.
-        </footer>
+    </section>
+
+    <section class="section" style="background: rgba(2, 6, 23, 0.4);">
+        <div class="container">
+            <span class="tagline">Enterprise Capabilities</span>
+            <div class="section-header">
+                <h2>Built for the Future of Work.</h2>
+            </div>
+            
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <i>🧬</i>
+                    <h3>Self-Correcting RAG</h3>
+                    <p>Internal reflection loops ensure your AI never cites hallucinated or irrelevant documents.</p>
+                </div>
+                <div class="use-case-card">
+                    <i>🛰️</i>
+                    <h3>Distributed Swarms</h3>
+                    <p>Redis-backed memory backbone allows thousands of agents to share a single, unified context state.</p>
+                </div>
+                <div class="use-case-card">
+                    <i>👁️</i>
+                    <h3>Multi-Modal Perception</h3>
+                    <p>CLIP-integrated Tier 3 allows the system to "remember" visual data like charts, diagrams, and UI layouts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <span class="tagline">Scientific Foundations</span>
+            <div class="section-header">
+                <h2>The Research Vault.</h2>
+            </div>
+            
+            <div class="research-shelf">
+                <a href="docs/Research_Paper_ICS_Elite_Full.md" class="paper-card">
+                    <span class="badge" style="background:#6366f1; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px;">PDF / MD</span>
+                    <h3 style="margin-top:1rem">The Neuro-Architecture of Infinite Context</h3>
+                    <p style="font-size:0.8rem; margin-top:0.5rem">A 40-page technical deep dive into recursive summarization and vector hierarchy.</p>
+                </a>
+                <a href="docs/Research_Paper_ICS_Elite.md" class="paper-card">
+                    <span class="badge" style="background:#06b6d4; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px;">Case Study</span>
+                    <h3 style="margin-top:1rem">Swarm Memory: Scaling to 1M Agents</h3>
+                    <p style="font-size:0.8rem; margin-top:0.5rem">Experimental results on Redis-backed distributed perception layers.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container" style="padding-bottom: 8rem;">
+        <div class="vc-banner">
+            <h2>The Future of AGI Infrastructure.</h2>
+            <p>RJ Business Solutions is leading the charge in persistent AI cognition. Are you ready to deploy?</p>
+            <a href="mailto:rickjefferson@rickjeffersonsolutions.com" class="btn btn-primary" style="background:#fff; color:#4338ca">Contact Rick Jefferson</a>
+        </div>
     </div>
+
+    <footer style="padding: 4rem 2rem; border-top: 1px solid var(--glass-border); text-align: center; color: var(--text-dim); font-size: 0.875rem;">
+        <p>© 2026 RJ Business Solutions. Developed by RJ Meta AGI Systems.</p>
+        <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 2rem;">
+            <a href="https://github.com/rjbizsolution23-wq/infinite-context-system" style="color:inherit">GitHub</a>
+            <a href="https://rickjeffersonsolutions.com" style="color:inherit">Company Site</a>
+        </div>
+    </footer>
+
+    <script>
+        // Simple scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.tier-card, .use-case-card, .section-header').forEach(el => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>

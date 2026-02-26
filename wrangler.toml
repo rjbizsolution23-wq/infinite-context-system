@@ -1,6 +1,8 @@
 [site]
 bucket = "./cloudflare" # The directory containing index.html and docs/
 
+pages_build_output_dir = "./cloudflare"
+
 # Configure your Pages project
 # name = "infinite-context-system"
 # account_id = "your-account-id"
