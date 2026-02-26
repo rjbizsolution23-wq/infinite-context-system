@@ -52,12 +52,19 @@ class InfiniteContextOrchestrator:
         self.tier2 = CompressedMemoryManager(config)
         self.tier3 = VectorRetrievalSystem(config)
         self.tier4 = PersistentMemorySystem(config)
+        self.cache = SemanticCache(config)
+        self.llm = UniversalLLMInterface(config)
         
         # Performance tracking
         self.total_queries = 0
         self.total_tokens_used = 0
+        self.cache_hits = 0
+        self.self_rag_triggers = 0
+        self.total_latency = 0.0
+        self.avg_precision_score = 0.0
+        self.token_savings_total = 0 # Tokens saved via cache or compression
         self.tier_usage_stats = {
-            "tier1": 0, "tier2": 0, "tier3": 0, "tier4": 0
+            "tier1": 0, "tier2": 0, "tier3": 0, "tier4": 0, "cache": 0
         }
         
         # Session tracking
@@ -116,11 +123,15 @@ class InfiniteContextOrchestrator:
             max_tokens = self.config.token_budget_per_request
             
         # 1. Check Semantic Cache
+        import time
+        start_time = time.time()
+        
         if self.config.enable_semantic_cache:
             cached_result = await self.cache.get(query)
             if cached_result:
                 self.cache_hits += 1
                 self.tier_usage_stats["cache"] += 1
+                self.token_savings_total += cached_result.get("total_tokens", 0)
                 return cached_result
 
         # 2. Calculate token budget allocation
@@ -206,8 +217,20 @@ class InfiniteContextOrchestrator:
             
         self.total_queries += 1
         self.total_tokens_used += total_tokens
+        self.total_latency += (time.time() - start_time)
         
         return context_data
+
+    def get_research_stats(self) -> Dict[str, Any]:
+        """Get stats formatted for scholarly analysis"""
+        return {
+            "total_queries": self.total_queries,
+            "avg_precision": f"{self.avg_precision_score*100:.1f}%",
+            "avg_latency": f"{(self.total_latency / max(1, self.total_queries))*1000:.1f}ms",
+            "total_token_savings": self.token_savings_total,
+            "cache_hit_rate": f"{(self.cache_hits / max(1, self.total_queries))*100:.1f}%",
+            "self_rag_efficacy": f"{(self.self_rag_triggers / max(1, self.total_queries))*100:.1f}% triggered"
+        }
 
     async def _reflect_on_retrieval(self, query: str, results: List[RetrievalResult]) -> float:
         """Reflect on whether retrieved documents answer the query."""
