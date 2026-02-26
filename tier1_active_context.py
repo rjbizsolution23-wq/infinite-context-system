@@ -308,6 +308,36 @@ class ActiveContextWindow:
             tokens=tokens
         )
     
+    async def sync_from_redis(self):
+        """Pull latest messages from Redis for Agent Swarm sync."""
+        if not self.redis:
+            return
+            
+        try:
+            raw_messages = self.redis.lrange("ics:tier1:messages", 0, -1)
+            if not raw_messages:
+                return
+                
+            self.messages.clear()
+            self.current_tokens = 0
+            
+            for raw in raw_messages:
+                data = json.loads(raw)
+                msg = Message(
+                    role=data['role'],
+                    content=data['content'],
+                    timestamp=datetime.fromisoformat(data['timestamp']),
+                    tokens=data['tokens'],
+                    metadata=data['metadata'],
+                    importance_score=data['importance_score']
+                )
+                self.messages.append(msg)
+                self.current_tokens += msg.tokens
+            
+            self.logger.info(f"Synced {len(self.messages)} messages from Redis")
+        except Exception as e:
+            self.logger.error(f"Error syncing Tier 1 from Redis: {e}")
+
     def boost_message_importance(self, message_idx: int, new_score: float):
         """Increase importance score of a specific message"""
         if 0 <= message_idx < len(self.messages):

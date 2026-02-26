@@ -14,6 +14,9 @@ from qdrant_client import QdrantClient, models
 from openai import AsyncOpenAI
 
 from config import SystemConfig, TokenCounter, ContextTier
+from flashrank import Ranker, RerankRequest
+from sentence_transformers import SentenceTransformer
+from PIL import Image
 
 
 @dataclass
@@ -104,6 +107,14 @@ class VectorRetrievalSystem:
         # Tracking
         self.total_retrievals = 0
         self.cache: Dict[str, List[RetrievalResult]] = {}
+        
+        # Initialize CLIP model for Multi-Modal
+        self.clip_model = None
+        try:
+            self.clip_model = SentenceTransformer('clip-ViT-B-32')
+            self.logger.info("Initialized CLIP model for visual memory")
+        except Exception as e:
+            self.logger.warning(f"Failed to load CLIP model: {e}")
 
     def _ensure_collection(self):
         """Ensure Qdrant collection exists"""
@@ -118,6 +129,50 @@ class VectorRetrievalSystem:
                     distance=models.Distance.COSINE
                 )
             )
+
+    async def add_image_knowledge(self, image_path: str, caption: str, metadata: Optional[Dict] = None):
+        """Add an image and its caption to the knowledge base using CLIP."""
+        if not self.clip_model:
+            self.logger.error("CLIP model not initialized. Cannot add image.")
+            return
+
+        try:
+            # We need standard PIL Image
+            img = Image.open(image_path)
+            # Generate CLIP image embedding
+            # Note: clip-ViT-B-32 expects Image object or path
+            img_emb = self.clip_model.encode(img).tolist()
+            
+            import uuid
+            doc = Document(
+                doc_id=str(uuid.uuid4()),
+                content=f"[IMAGE CAPTION]: {caption}",
+                metadata={
+                    **(metadata or {}),
+                    "media_type": "image",
+                    "image_path": image_path,
+                },
+                source=metadata.get("source", "user_image") if metadata else "user_image"
+            )
+            
+            point = models.PointStruct(
+                id=doc.doc_id,
+                vector=img_emb,
+                payload=doc.to_dict()
+            )
+            
+            if self.qdrant:
+                self.qdrant.upsert(
+                    collection_name=self.config.collection_name,
+                    points=[point]
+                )
+            
+            # Fallback
+            self.documents[doc.doc_id] = doc
+            self.logger.info(f"Indexed image: {image_path}")
+            
+        except Exception as e:
+            self.logger.error(f"Error indexing image {image_path}: {e}")
 
     async def add_documents(self, documents: List[Document], 
                      generate_embeddings: bool = True):
@@ -196,7 +251,7 @@ class VectorRetrievalSystem:
         
         # Rerank if enabled
         if self.rerank_enabled and len(results) > self.rerank_top_n:
-            results = self._rerank(query, results[:self.rerank_top_n * 2])
+            results = await self._rerank(query, results[:self.rerank_top_n * 2])
         
         # Limit results
         results = results[:top_k]

@@ -109,52 +109,68 @@ class InfiniteContextOrchestrator:
     async def generate_context(self, query: str,
                         max_tokens: Optional[int] = None) -> Dict[str, Any]:
         """
-        Generate complete context for LLM by intelligently combining all tiers
-        
-        Args:
-            query: Current user query
-            max_tokens: Maximum total tokens (defaults to config)
-        
-        Returns:
-            Dictionary with formatted context and metadata
+        Generate complete context for LLM by intelligently combining all tiers.
+        Now featuring Semantic Caching and Self-Correcting Retrieval (Self-RAG).
         """
         if max_tokens is None:
             max_tokens = self.config.token_budget_per_request
-        
-        # Calculate token budget allocation
+            
+        # 1. Check Semantic Cache
+        if self.config.enable_semantic_cache:
+            cached_result = await self.cache.get(query)
+            if cached_result:
+                self.cache_hits += 1
+                self.tier_usage_stats["cache"] += 1
+                return cached_result
+
+        # 2. Calculate token budget allocation
         budget = self._allocate_token_budget(max_tokens, query)
         
-        # Collect context from each tier
+        # 3. Collect context from tiers
         contexts = {}
         
-        # TIER 1: Active Context (always included)
-        tier1_context = self.tier1.get_context_for_llm(include_key_points=True)
-        contexts["tier1"] = tier1_context
+        # TIER 1 & TIER 2: Immediate & Short-term
+        contexts["tier1"] = self.tier1.get_context_for_llm(include_key_points=True)
         self.tier_usage_stats["tier1"] += 1
         
-        # TIER 2: Compressed Memory (if available)
         if self.config.enable_short_term_memory and budget.tier2_compressed > 0:
             tier2_context = self.tier2.get_context_summary(budget.tier2_compressed)
             if tier2_context:
                 contexts["tier2"] = tier2_context
                 self.tier_usage_stats["tier2"] += 1
         
-        # TIER 3: Vector Retrieval (query-driven)
+        # 4. TIER 3: Vector Retrieval with Self-RAG loop
+        retrieval_results = []
         if budget.tier3_retrieval > 0:
             retrieval_results = await self.tier3.retrieve(
                 query=query,
-                top_k=10,
+                top_k=int(self.config.retrieval_top_k * 1.5), # Get extra for reflection
                 strategy=self.config.retrieval_strategy
             )
+            
+            # SELF-RAG REFLECTION
+            if self.config.enable_self_rag and retrieval_results:
+                relevance_score = await self._reflect_on_retrieval(query, retrieval_results)
+                
+                if relevance_score < self.config.self_rag_threshold:
+                    self.self_rag_triggers += 1
+                    # Broaden search with query expansion
+                    expanded_queries = await self._expand_query(query)
+                    extra_results = await self.tier3.multi_query_retrieve(expanded_queries, top_k_per_query=5)
+                    retrieval_results.extend(extra_results)
+                    # Deduplicate and sort
+                    seen = set()
+                    retrieval_results = [r for r in retrieval_results if not (r.document.doc_id in seen or seen.add(r.document.doc_id))]
+                    retrieval_results.sort(key=lambda x: x.score, reverse=True)
+            
             if retrieval_results:
-                tier3_context = self.tier3.get_context_for_llm(
+                contexts["tier3"] = self.tier3.get_context_for_llm(
                     retrieval_results,
                     max_tokens=budget.tier3_retrieval
                 )
-                contexts["tier3"] = tier3_context
                 self.tier_usage_stats["tier3"] += 1
         
-        # TIER 4: Persistent Memory (entity-driven)
+        # 5. TIER 4: Persistent Memory (entity-driven)
         if self.config.enable_long_term_memory and budget.tier4_persistent > 0:
             tier4_context = self.tier4.get_context_for_llm(
                 query=query,
@@ -164,29 +180,72 @@ class InfiniteContextOrchestrator:
                 contexts["tier4"] = tier4_context
                 self.tier_usage_stats["tier4"] += 1
         
-        # Build system prompt with context summary
+        # 6. Build final payload
         context_summary = self._build_context_summary(contexts, budget)
         system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
             context_summary=context_summary,
             task_description=query
         )
         
-        # Count total tokens
-        total_tokens = sum(
-            self.token_counter.count(str(ctx)) 
-            for ctx in contexts.values()
-        ) + self.token_counter.count(system_prompt)
+        total_tokens = sum(self.token_counter.count(str(ctx)) for ctx in contexts.values()) + \
+                       self.token_counter.count(system_prompt)
         
-        self.total_queries += 1
-        self.total_tokens_used += total_tokens
-        
-        return {
+        context_data = {
             "system_prompt": system_prompt,
             "contexts": contexts,
             "budget": budget,
             "total_tokens": total_tokens,
-            "budget_utilization": f"{(total_tokens / max_tokens * 100):.1f}%"
+            "budget_utilization": f"{(total_tokens / max_tokens * 100):.1f}%",
+            "tiers_used": list(contexts.keys()),
+            "self_rag_correction": self.self_rag_triggers > 0
         }
+        
+        # 7. Store in Semantic Cache
+        if self.config.enable_semantic_cache:
+            await self.cache.set(query, context_data)
+            
+        self.total_queries += 1
+        self.total_tokens_used += total_tokens
+        
+        return context_data
+
+    async def _reflect_on_retrieval(self, query: str, results: List[RetrievalResult]) -> float:
+        """Reflect on whether retrieved documents answer the query."""
+        if not results: return 0.0
+        
+        snippets = "\n".join([f"- {r.document.content[:200]}..." for r in results[:3]])
+        prompt = f"Query: {query}\n\nTop Retrieved Results:\n{snippets}\n\nHow relevant are these results to the query? Respond with a single number between 0 and 1, where 1 is perfectly relevant and 0 is completely irrelevant."
+        
+        try:
+            response = await self.client.chat.completions.create(
+                model=self.config.summary_model,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=10,
+                temperature=0
+            )
+            score_text = response.choices[0].message.content.strip()
+            # Extract number
+            import re
+            match = re.search(r"(\d+\.?\d*)", score_text)
+            return float(match.group(1)) if match else 0.5
+        except Exception:
+            return 0.5 # Neutral fallback
+
+    async def _expand_query(self, query: str) -> List[str]:
+        """Generate 3 expanded/alternative queries for better retrieval."""
+        prompt = f"Query: {query}\n\nGenerate 3 alternative versions of this query that use different keywords but maintain the same intent. Return as a bulleted list."
+        try:
+            response = await self.client.chat.completions.create(
+                model=self.config.summary_model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7
+            )
+            content = response.choices[0].message.content
+            # Basic parsing of bulleted list
+            queries = [line.strip("- *123. ") for line in content.split("\n") if line.strip()]
+            return queries[:3]
+        except Exception:
+            return [f"Alternative perspective on: {query}"]
     
     def _allocate_token_budget(self, max_tokens: int, query: str) -> ContextBudget:
         """
@@ -293,6 +352,15 @@ class InfiniteContextOrchestrator:
         )
         
         await self.tier3.add_documents([doc], generate_embeddings=True)
+
+    async def add_image_knowledge(self, image_path: str, caption: str, metadata: Optional[Dict] = None):
+        """Add visual knowledge to Tier 3 using CLIP perception."""
+        await self.tier3.add_image_knowledge(image_path, caption, metadata)
+        
+    async def sync_distributed_memory(self):
+        """Pull latest state from Redis distributed backbone (Agent Swarms)."""
+        await self.tier1.sync_from_redis()
+        await self.tier2.sync_from_redis()
     
     def set_user_preference(self, key: str, value: Any, confidence: float = 1.0):
         """Set a user preference in Tier 4"""
