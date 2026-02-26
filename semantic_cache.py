@@ -19,7 +19,7 @@ class SemanticCache:
         self.config = config
         self.logger = logging.getLogger(__name__)
         self.client = AsyncOpenAI(api_key=config.openai_api_key)
-        self.cache: Dict[str, Dict[str, Any]] = {} # In-memory storage for demo
+        self.cache: Dict[str, Dict[str, Any]] = {} 
         self.embeddings: Dict[str, List[float]] = {}
         
     async def get(self, query: str) -> Optional[Dict[str, Any]]:
@@ -40,7 +40,7 @@ class SemanticCache:
                     best_score = score
                     best_match = cached_query
             
-            # Threshold check (e.g., 0.95 for direct semantic hit)
+            # Threshold check (0.95 for direct semantic hit)
             if best_match and best_score > 0.95:
                 self.logger.info(f"Semantic Cache Hit! Score: {best_score:.4f}")
                 return self.cache[best_match]
