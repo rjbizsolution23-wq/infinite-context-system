@@ -2,10 +2,18 @@
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai)](https://openai.com/)
+[![MCP](https://img.shields.io/badge/MCP-Server-orange?style=for-the-badge)](https://modelcontextprotocol.io)
+[![CI](https://github.com/rjbizsolution23-wq/infinite-context-system/actions/workflows/ci.yml/badge.svg)](https://github.com/rjbizsolution23-wq/infinite-context-system/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg?style=for-the-badge&logo=python)](https://www.python.org/)
 
 > **The ultimate multi-tier context management framework for LLMs and AI Agents. Eliminate context limits with intelligent orchestration, semantic retrieval, and graph-based memory.**
+
+---
+
+## 📖 Essential Guides
+*   **[Core Architecture](ARCHITECTURE.md)**: Deep dive into the 4-tier memory model.
+*   **[MCP Mastery Guide](MCP_GUIDE.md)**: How to maximize the Model Context Protocol tools.
+*   **[Installation & Setup](INSTALL.md)**: Standard setup instructions.
 
 ---
 
