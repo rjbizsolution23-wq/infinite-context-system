@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Computational Fluidity: The Infinite Context System (ICS)"
+authors:
+  - family-names: "Jefferson"
+    given-names: "Rick"
+    email: "rickjefferson@rickjeffersonsolutions.com"
+    affiliation: "RJ Business Solutions"
+    orcid: "https://orcid.org/0000-0002-XXXX-XXXX"
+    city: "Tijeras"
+    region: "New Mexico"
+    country: "US"
+date-released: 2026-02-26
+url: "https://github.com/rjbizsolution23-wq/infinite-context-system"
+repository-code: "https://github.com/rjbizsolution23-wq/infinite-context-system"
+license: "Apache-2.0"
+type: "software"
+keywords:
+  - artificial intelligence
+  - machine learning
+  - retrieval-augmented generation
+  - long-term memory
+  - autonomous agents
+abstract: "The Infinite Context System (ICS) is a 4-tier hybrid memory architecture for perpetual AI agents, featuring self-correcting retrieval and multi-modal perception."
