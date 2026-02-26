@@ -18,6 +18,32 @@ Unlike basic RAG implementations, **ICS is built for production stability**. It 
 
 ---
 
+## 🔌 MCP Integration (Model Context Protocol)
+
+ICS is a fully-featured **MCP Server**, allowing it to be used as a set of tools by any MCP-capable agent (like Claude Desktop).
+
+### Exposed Tools:
+*   `ingest_knowledge`: Add new background documents.
+*   `query_memory`: Retrieve consolidated context across all tiers.
+*   `remember_relationship`: Manually inject graph relationships.
+*   `get_system_health`: Monitor memory utilization.
+
+### Usage with Claude Desktop:
+Add this to your `claude_desktop_config.json`:
+```json
+"mcpServers": {
+  "infinite-context": {
+    "command": "python",
+    "args": ["/path/to/mcp_server.py"],
+    "env": {
+      "OPENAI_API_KEY": "your-key-here"
+    }
+  }
+}
+```
+
+---
+
 ## 🏗️ 4-Tier Hybrid Architecture
 
 ```mermaid
