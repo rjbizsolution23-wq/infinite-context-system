@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "infinite-context-system"
 version = "3.0.0"
 authors = [
-  { name="Rick Jefferson (RJ Business Solutions)", email="info@rjbusinesssolutions.org" },
+  { name="Rick Jefferson", email="rickjefferson@rickjeffersonsolutions.com" },
 ]
 description = "Elite 4-Tier Infinite Context Orchestrator with Self-RAG and Multi-Modal Perception"
 readme = "README.md"
@@ -31,5 +31,5 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://rjbusinesssolutions.org"
-"Bug Tracker" = "https://github.com/rj-business-solutions/infinite-context-system/issues"
+"Homepage" = "https://rickjeffersonsolutions.com"
+"Bug Tracker" = "https://github.com/rjbizsolution23-wq/infinite-context-system/issues"
