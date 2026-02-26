@@ -17,10 +17,6 @@ pillow>=10.0.0
 redis>=5.0.3
 networkx>=3.2.1
 
-# Performance & Caching
-numpy>=1.26.4
-semantic-cache>=0.1.0
-
 # API & Protocols
 fastmcp>=0.4.1
 fastapi>=0.110.0
