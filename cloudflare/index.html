@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Context System (ICS) — Enterprise AI Memory</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #0f172a;
+            --text: #f8fafc;
+            --card-bg: #1e293b;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1 { font-size: 3rem; margin-bottom: 1rem; }
+        .badge {
+            background: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid #334155;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .cta {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="badge">v3.0 — Elite Edition</span>
+        <h1>Infinite Context System</h1>
+        <p>Revolutionizing LLM memory with a 4-tier perception architecture.</p>
+        <a href="https://github.com/rjbizsolution23-wq/infinite-context-system" class="cta">View Source on GitHub</a>
+    </header>
+    <div class="container">
+        <h2>Enterprise-Grade AI Infrastructure</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>🧠 Self-RAG</h3>
+                <p>Autonomous reflection loops that validate and self-correct retrieval results for maximum precision.</p>
+            </div>
+            <div class="card">
+                <h3>👁️ Multi-Modal</h3>
+                <p>CLIP-based visual perception for indexing images, charts, and diagrams directly into AI memory.</p>
+            </div>
+            <div class="card">
+                <h3>🐝 Swarm Memory</h3>
+                <p>Distributed Redis backbone for synchronizing context across massive agent networks.</p>
+            </div>
+        </div>
+        
+        <footer style="margin-top: 5rem; text-align: center; opacity: 0.6;">
+            © 2026 RJ Business Solutions. All rights reserved.
+        </footer>
+    </div>
+</body>
+</html>

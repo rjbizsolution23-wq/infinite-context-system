@@ -1,0 +1,9 @@
+# Cloudflare Tunnel Configuration for Infinite Context System (ICS)
+# Expose your high-performance Python backend securely.
+
+ingress:
+  - hostname: api.ics.rjbusinesssolutions.com # Change to your domain
+    service: http://localhost:8000
+  - service: http_status:404
+
+# Run with: cloudflared tunnel run <tunnel-uuid>

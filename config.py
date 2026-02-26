@@ -40,6 +40,7 @@ class SystemConfig:
     # LLM Configuration
     primary_llm: str = "gpt-4-turbo-2024-04-09"
     fallback_llm: str = "claude-3-5-sonnet-20240620"
+    llm_provider: str = "openai"
     max_llm_context: int = 128000
     
     # Storage Paths
@@ -59,6 +60,11 @@ class SystemConfig:
     vector_db_url: str = os.getenv("QDRANT_URL", "http://localhost:6333")
     vector_db_api_key: str = os.getenv("QDRANT_API_KEY", "")
     collection_name: str = "infinite_context"
+    
+    # Feature Flags
+    enable_semantic_cache: bool = True
+    enable_self_rag: bool = True
+    self_rag_threshold: float = 0.7
     
     # Memory Configuration
     enable_short_term_memory: bool = True

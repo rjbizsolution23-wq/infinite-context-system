@@ -11,8 +11,10 @@ import json
 from config import SystemConfig, TokenCounter, SYSTEM_PROMPT_TEMPLATE
 from tier1_active_context import ActiveContextWindow, Message
 from tier2_compressed_memory import CompressedMemoryManager
-from tier3_vector_retrieval import VectorRetrievalSystem, Document
+from tier3_vector_retrieval import VectorRetrievalSystem, Document, RetrievalResult
 from tier4_persistent_memory import PersistentMemorySystem
+from semantic_cache import SemanticCache
+from llm_interface import UniversalLLMInterface
 
 
 @dataclass
