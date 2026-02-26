@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "b7d5a2c3-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+		"name": "ICS v4.0 Elite — Supreme API",
+		"description": "Enterprise API collection for the Infinite Context System by RJ Business Solutions.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "System Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Perception",
+			"item": [
+				{
+					"name": "Process Query",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"Analyze the relationship between Tier 1 and Tier 4.\",\n  \"session_id\": \"elite-test-01\",\n  \"enable_self_rag\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/process",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"process"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Session Memory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/memory/elite-test-01",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"memory",
+								"elite-test-01"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000"
+		},
+		{
+			"key": "api_token",
+			"value": "your_secure_token_here"
+		}
+	]
+}

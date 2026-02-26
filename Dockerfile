@@ -1,29 +1,52 @@
-FROM python:3.11-slim
+# 🛡️ SUPREME PRODUCTION DOCKERFILE
+# Multi-stage build for maximum security and minimum footprint
+# Architecture: ICS v4.0 Elite
 
-WORKDIR /app
+# --- Phase 1: Dependency Builder ---
+FROM python:3.12-slim AS builder
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+WORKDIR /build
+
+# Install system build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install
+# Install Python requirements
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --user --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# --- Phase 2: Production Runner ---
+FROM python:3.12-slim AS runner
 
-# Create storage directory
-RUN mkdir -p storage
+WORKDIR /app
 
-# Expose API port
-EXPOSE 8000
+# Non-root user for security
+RUN groupadd -g 1001 icsgroup && \
+    useradd -u 1001 -g icsgroup -s /bin/sh icsuser
+
+# Copy installed packages from builder
+COPY --from=builder /root/.local /home/icsuser/.local
+ENV PATH=/home/icsuser/.local/bin:$PATH
+
+# Copy application source code
+COPY --chown=icsuser:icsgroup . .
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
+ENV APP_ENV=production
 ENV LOG_LEVEL=INFO
 
-# Run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Expose ports for API and Monitoring
+EXPOSE 8000
+EXPOSE 9090
+
+USER icsuser
+
+# Healthcheck for orchestration stability
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Start the Supreme Engine
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
